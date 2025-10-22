@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Módulos - Enemigos</title>
+</head>
+
+<body>
+    <h1>figthing orcos localy</h1>
+
+    <script type="module">
+        import { Enemigo, Orco, Troll } from './enemigos.js';
+
+        const orco = new Orco();
+        const troll = new Troll();
+
+        console.log("Orco -> Energía:", orco.energia);
+        console.log("Orco -> Fuerza:", orco.fuerza);
+        orco.mover();
+        orco.disparar();
+
+        console.log("Troll -> Energía:", troll.energia);
+        console.log("Troll -> Fuerza:", troll.fuerza);
+        troll.mover();
+        troll.golpear();
+    </script>
+</body>
+
+</html>
