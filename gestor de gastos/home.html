@@ -1,11 +1,36 @@
 <!DOCTYPE html>
-<html>
-<main>
+<html lang="es">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Presupuesto</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
 
-    <body>
+<body>
+    <h1>Gestor de Presupuesto</h1>
 
-    </body>
-</main>
+    <section id="presupuesto-section">
+        <h2>Presupuesto</h2>
+        <input type="number" id="inputPresupuesto" placeholder="Introduce tu presupuesto (€)">
+        <button id="btnActualizar">Actualizar Presupuesto</button>
+        <p id="textoPresupuesto"></p>
+    </section>
+
+    <section id="gastos-section">
+        <h2>Registrar gasto</h2>
+        <input type="text" id="descGasto" placeholder="Descripción del gasto">
+        <input type="number" id="valorGasto" placeholder="Valor (€)">
+        <button id="btnAgregarGasto">Agregar gasto</button>
+    </section>
+
+    <section id="listaGastos">
+        <h3>Gastos registrados</h3>
+        <ul id="gastos"></ul>
+    </section>
+
+    <script src="script.js"></script>
+</body>
 
 </html>
