@@ -254,6 +254,3 @@ export {
     agruparGastos
 }
 
-const ejemplo1 = new CrearGasto("Viaje_NOvios", 500.50, "2025-10-01", "avion", "transporte");
-const ejemplo2 = new CrearGasto("Hotel", 100);
-const ejemplo3 = new CrearGasto("Cena", 50, "fecha-no-valida", "cena", "tienda");
