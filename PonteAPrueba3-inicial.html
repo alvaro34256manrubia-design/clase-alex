@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Unidad 3 - Ponte a Prueba</title>
+</head>
+
+<body>
+	<h1>Formulario de contacto</h1>
+	<form name="form1">
+		<div>
+			<label for="nombre">Nombre</label>
+			<input id="nombre" name="nombre" type="text">
+		</div>
+		<div>
+			<label for="apellidos">Apellidos</label>
+			<input id="apellidos" name="apellidos" type="text">
+		</div>
+		<div>
+			<label for="email">Email</label>
+			<input id="email" name="email" type="text">
+		</div>
+		<div>
+			<label for="telefono">Teléfono</label>
+			<input id="telefono" name="telefono" type="text">
+		</div>
+		<div>
+			Edad:
+			<label for="menor30">Menos de 30</label>
+			<input id="menor30" name="edad" type="radio" value="menor30">
+			<label for="entre3050">Entre 30 y 50</label>
+			<input id="entre3050" name="edad" type="radio" value="entre3050">
+			<label for="mayor50">Más de 50</label>
+			<input id="mayor50" name="edad" type="radio" value="mayor50">
+		</div>
+		<div>
+			<button type="submit">Enviar</button>
+		</div>
+	</form>
+	<script>
+		document.forms["form1"].addEventListener("submit", function (event) {
+			event.preventDefault();
+
+			const nombre = document.getElementById("nombre").value;
+			const apellidos = document.getElementById("apellidos").value;
+			const email = document.getElementById("email").value;
+			const telefono = document.getElementById("telefono").value;
+			const edad = document.querySelector('input[name="edad"]:checked');
+
+			let mensaje = "Datos del formulario:\n";
+			mensaje += "Nombre: " + nombre + "\n";
+			mensaje += "Apellidos: " + apellidos + "\n";
+			mensaje += "Email: " + email + "\n";
+			mensaje += "Teléfono: " + telefono + "\n";
+			mensaje += "Edad: " + (edad ? edad.value : "No seleccionada");
+
+			alert(mensaje);
+		});	
+	</script>
+</body>
+
+</html>
