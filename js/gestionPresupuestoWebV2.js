@@ -3,95 +3,126 @@ import {
     listarGastos,
     borrarGasto,
     calcularTotalGastos,
-} from './gestionPresupuesto.js'
+    CrearGasto
+} from './gestionPresupuesto.js';
 
 const $total = document.getElementById('total');
 const $formulario = document.getElementById('formulario');
 const $listado = document.getElementById('listado');
 
-function pintarTotal(){
-    const total= calcularTotalGastos();
-    $total.textContent = `Total: ${total}`; 
-}
 
-function construirFormulario(){
+function construirFormulario() {
     const form = document.createElement('form');
-    form.setAttribute('aria-label', 'Crear Gasto');
 
-    const labelNombre = document.createElement('label');
-    labelNombre.textContent = 'Nombre: ';
-    const inputNombre = document.createElement('input');
-    inputNombre.type = 'text';
-    inputNombre.name = 'name';
-    inputNombre.required = 'true';
-
-    const labelCantidad = document.createElement('label');
-    labelCantidad.textContent = 'Cantidad: ';
-    const inputCantidad = document.createElement('input');
-    inputCantidad.type = 'number';
-    inputCantidad.name = 'cantidad';
-    inputCantidad.step = '0.01';
-    inputCantidad.required = true;
-
-    const btn = document.createElement('button');
-    btn.type = 'submit';
-    btn.textContent = 'Añadir gasto';
-
-    const div = document.createElement('div');
-    div.appendChild(labelNombre);
-    div.appendChild(inputNombre);
-    div.appendChild(document.createTextNode(' '));
-    div.appendChild(labelCantidad);
-    div.appendChild(inputCantidad);
-    div.appendChild(document.createTextNode(' '));
-    div.appendChild(btn);
-
-    form.appendChild(div); //Contenedor con todos los datos de mi formulario
+    form.innerHTML = `
+        <label>Nombre: <input name="name" required></label>
+        <label>Cantidad: <input name="cantidad" type="number" step="0.01" required></label>
+        <button type="submit">Añadir gasto</button>
+    `;
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const nombre = inputNombre.value.trim();
-        const cantidad = parseFloat(inputCantidad.value);
-        if (!nombre || Number.isNaN(cantidad)) return;
 
-        anyadirGasto({descripcion: nombre, valor: cantidad});
+        const nombre = form.name.value.trim();
+        const cantidad = parseFloat(form.cantidad.value);
+        if (!nombre || isNaN(cantidad)) return;
+
+        const gasto = new CrearGasto(nombre, cantidad);
+        anyadirGasto(gasto);
 
         pintarTotal();
         pintarListado();
 
         form.reset();
-        inputNombre.focus();
+        form.name.focus();
     });
-    $formulario.replaceChildren(form);
 
+    $formulario.replaceChildren(form);
 }
 
-function pintarListado() {
-    const gastos = listarGastos();
+function pintarTotal() {
+    $total.textContent = `Total: ${calcularTotalGastos()} €`;
+}
 
-    const ul= document.createElement('ul');
 
-    gastos.forEach((g) => {
-        const li = document.createElement('li');
-        li.textContent = `${g.descripcion}: ${g.valor}`;
+class MiGasto extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
 
-        const btnBorrar = document.createElement('button');
-        btnBorrar.type = 'button';
-        btnBorrar.textContent = 'Borrar';
-        btnBorrar.addEventListener('click', ()=>{
-            const ok = confirm(`Borrar "${g.descripcion}" por ${g.valor}?`);
+        const template = document.getElementById('gasto-template');
+        const content = template.content.cloneNode(true);
+        this.shadowRoot.appendChild(content);
+
+        this.gasto = null;
+    }
+
+    set data(gasto) {
+        this.gasto = gasto;
+        this.render();
+    }
+
+    render() {
+        if (!this.gasto) return;
+
+        const s = this.shadowRoot;
+        s.querySelector('.descripcion').textContent = `Descripción: ${this.gasto.descripcion}`;
+        s.querySelector('.valor').textContent = `Valor: ${this.gasto.valor} €`;
+        s.querySelector('.fecha').textContent = `Fecha: ${new Date(this.gasto.fecha).toLocaleDateString()}`;
+        s.querySelector('.etiquetas').textContent = `Etiquetas: ${this.gasto.etiquetas.join(', ')}`;
+
+        s.querySelector('.btn-borrar').onclick = () => {
+            const ok = confirm(`¿Borrar "${this.gasto.descripcion}"?`);
             if (!ok) return;
+            borrarGasto(this.gasto.id);
+            pintarListado();
+            pintarTotal();
+        };
 
-            borrarGasto(g.id);
+        const form = s.querySelector('.editar-form');
+        s.querySelector('.btn-editar').onclick = () => {
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
 
+            form.descripcion.value = this.gasto.descripcion;
+            form.valor.value = this.gasto.valor;
+            form.fecha.value = new Date(this.gasto.fecha).toISOString().substring(0, 10);
+            form.etiquetas.value = this.gasto.etiquetas.join(', ');
+        };
+
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            this.gasto.descripcion = form.descripcion.value.trim();
+            this.gasto.valor = parseFloat(form.valor.value);
+            this.gasto.fecha = Date.parse(form.fecha.value);
+            this.gasto.etiquetas = form.etiquetas.value
+                .split(',')
+                .map(e => e.trim())
+                .filter(e => e);
+
+            form.style.display = 'none';
+            render();
             pintarTotal();
             pintarListado();
-        });
-        li.appendChild(btnBorrar);
-        ul.appendChild(li);
+        };
 
+        form.querySelector('.cancelar').onclick = () => {
+            form.style.display = 'none';
+        };
+    }
+}
+
+customElements.define('mi-gasto', MiGasto);
+
+
+function pintarListado() {
+    const lista = listarGastos();
+    $listado.textContent = '';
+
+    lista.forEach(g => {
+        const item = document.createElement('mi-gasto');
+        item.data = g;
+        $listado.appendChild(item);
     });
-    $listado.replaceChildren(ul);
 }
 
 construirFormulario();

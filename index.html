@@ -2,16 +2,72 @@
 <html lang="es">
 
 <head>
-    <meta charset="utf-8">
-    <title>Gestor de presupuestos </title>
-    <meta name="viewport" content="width=device-width, initial scale=1">
+    <meta charset="utf-8" />
+    <title>Gestor de Presupuestos - Web Components</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 
 <body>
-    <h1>Gestor de presupuestos</h1>
+    <h1>Gestor de Presupuestos</h1>
+
     <section id="total"></section>
     <section id="formulario"></section>
     <section id="listado"></section>
+
+    <template id="gasto-template">
+        <style>
+            .card {
+                border: 1px solid #ddd;
+                padding: 1rem;
+                border-radius: 8px;
+                background: #fafafa;
+            }
+
+            .fila {
+                margin: 0.25rem 0;
+            }
+
+            .acciones button {
+                margin-right: .5rem;
+                cursor: pointer;
+            }
+
+            form {
+                margin-top: .5rem;
+                padding: .5rem;
+                background: #eef;
+                border-radius: 6px;
+                display: none;
+            }
+
+            form input {
+                margin: .25rem 0;
+                width: 95%;
+            }
+        </style>
+
+        <div class="card">
+            <div class="fila" id="desc"></div>
+            <div class="fila" id="valor"></div>
+            <div class="fila" id="fecha"></div>
+            <div class="fila" id="etiquetas"></div>
+
+            <div class="acciones">
+                <button id="editarBtn">Editar</button>
+                <button id="borrarBtn">Borrar</button>
+            </div>
+
+            <form id="editarForm">
+                <label>Descripción:<br><input type="text" id="edit-descripcion" /></label><br>
+                <label>Valor:<br><input type="number" id="edit-valor" step="0.01" min="0" /></label><br>
+                <label>Fecha:<br><input type="date" id="edit-fecha" /></label><br>
+                <label>Etiquetas (coma):<br><input type="text" id="edit-etiquetas" /></label><br>
+
+                <button type="button" id="cancelarBtn">Cancelar</button>
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+    </template>
 
     <script type="module" src="./js/gestionPresupuestoWebV2.js"></script>
 </body>

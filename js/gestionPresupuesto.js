@@ -218,15 +218,24 @@ function calcularBalance(){
   return presupuesto - calcularTotalGastos();
 }
 
+
+export function sobrescribirGastos(nuevaLista) {
+gastos = nuevaLista;
+idGasto = gastos.length > 0 ? Math.max(...gastos.map(g => g.id)) + 1 : 0;
+}
+
+
 export {
-    mostrarPresupuesto,
-    actualizarPresupuesto,
-    CrearGasto,
-    listarGastos,
-    anyadirGasto,
-    borrarGasto,
-    calcularTotalGastos,
-    calcularBalance,
-    filtrarGastos,
-    agruparGastos
+mostrarPresupuesto,
+actualizarPresupuesto,
+CrearGasto,
+listarGastos,
+anyadirGasto,
+borrarGasto,
+calcularTotalGastos,
+calcularBalance,
+filtrarGastos,
+agruparGastos,
+sobrescribirGastos
 };
+
